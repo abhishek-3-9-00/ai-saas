@@ -55,7 +55,7 @@ const CodePage = () => {
     <div>
       <Heading
         title="Code Generation"
-        description="Generate the with descriptive text"
+        description="Generate the with descriptive text..."
         icon={Code}
         iconColor="text-green-700"
         bgColor="bg-green-500/10"
