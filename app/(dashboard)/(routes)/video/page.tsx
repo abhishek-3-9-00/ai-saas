@@ -2,7 +2,7 @@
 import * as z from "zod";
 import Heading from "@/components/ui/heading";
 import { useRouter } from "next/navigation";
-import { Code, MessageSquare } from "lucide-react";
+import { MessageSquare, Music, VideoIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { formSchema } from "./constants";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,13 +17,10 @@ import { Loader } from "@/components/loader";
 import { cn } from "@/lib/utils";
 import { UserAvtar } from "@/components/user-avatar";
 import { BotAvatar } from "@/components/bot-avatar";
-import ReactMarkdown from "react-markdown";
 
-const CodePage = () => {
+const VideoPage = () => {
   const router = useRouter();
-  const [messages, setMessages] = useState<OpenAI.Chat.ChatCompletionMessage[]>(
-    []
-  );
+  const [video, setVideo] = useState<string>();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -33,16 +30,9 @@ const CodePage = () => {
   const isLoading = form.formState.isSubmitting;
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const userMessage: OpenAI.Chat.ChatCompletionMessage = {
-        role: "user",
-        content: values.prompt,
-      };
-      const newMessages = [...messages, userMessage];
-      const response = await axios.post("/api/code", {
-        messages: newMessages,
-      });
-
-      setMessages((prev) => [...prev, userMessage, response.data]);
+      setVideo(undefined);
+      const response = await axios.post("/api/video", values);
+      setVideo(response.data[0]);
       form.reset();
     } catch (error: any) {
       //Open pro modal
@@ -54,11 +44,11 @@ const CodePage = () => {
   return (
     <div>
       <Heading
-        title="Code Generation"
-        description="Generate the with descriptive text... "
-        icon={Code}
-        iconColor="text-green-700"
-        bgColor="bg-green-500/10"
+        title="Video Generation"
+        description="Turn your prompt into Video"
+        icon={VideoIcon}
+        iconColor="text-orange-700"
+        bgColor="bg-orange-700/10"
       />
       <div className="px-4 lg:px-8">
         <div>
@@ -76,7 +66,7 @@ const CodePage = () => {
                         className="border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
                         disabled={isLoading}
                         autoComplete="off"
-                        placeholder="Create Rest Apis using express.js"
+                        placeholder="Clown Fish moving around pond."
                         {...field}
                       />
                     </FormControl>
@@ -98,50 +88,19 @@ const CodePage = () => {
               <Loader />
             </div>
           )}
-          {messages.length === 0 && !isLoading && (
-            <Empty label="No Conversation Started." />
+          {!video && !isLoading && <Empty label="No Video Generated." />}
+          {video && (
+            <video
+              controls
+              className="w-full aspect-video mt-8 rounded-lg border bg-black"
+            >
+              <source src={video} />
+            </video>
           )}
-          <div className="flex flex-col-reverse gap-y-4">
-            {messages.map((message) => (
-              <div
-                key={message.content}
-                className={cn(
-                  "p-8 w-full flex items-start gap-x-8 rounded-lg",
-                  message.role === "user"
-                    ? "bg-white border border-black/10"
-                    : "bg-muted"
-                )}
-              >
-                {message.role === "user" ? <UserAvtar /> : <BotAvatar />}
-                <ReactMarkdown
-                  components={{
-                    pre: ({ node, ...props }) => {
-                      return (
-                        <div className="overflow-auto w-full my-2 bg-black/10 p-2 rounded-lg ">
-                          <pre {...props} />
-                        </div>
-                      );
-                    },
-                    code: ({ node, ...props }) => {
-                      return (
-                        <code
-                          className="bg-black/10 rounded-lg p-1"
-                          {...props}
-                        />
-                      );
-                    },
-                  }}
-                  className="text-sm overflow-hidden leading-7"
-                >
-                  {message.content || ""}
-                </ReactMarkdown>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
     </div>
   );
 };
 
-export default CodePage;
+export default VideoPage;
