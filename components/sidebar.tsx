@@ -5,9 +5,14 @@ import { Montserrat } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { routes } from "./(routesData)";
 import { usePathname } from "next/navigation";
+import { FreeCounter } from "./free-counter";
 const montserrat = Montserrat({ weight: "600", subsets: ["latin"] });
 
-const Sidebar = () => {
+interface SidebarProps {
+  apiLimitCount: any;
+}
+
+const Sidebar = ({ apiLimitCount = 0 }: SidebarProps) => {
   const pathname = usePathname();
   return (
     <div className="spaxce-y-4 py-4 flex flex-col h-full bg-[#111827] text-white">
@@ -40,6 +45,7 @@ const Sidebar = () => {
           ))}
         </div>
       </div>
+      <FreeCounter apiLimitCount={apiLimitCount} />
     </div>
   );
 };
