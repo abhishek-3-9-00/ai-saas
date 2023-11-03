@@ -38,24 +38,24 @@ const ConversationPage = () => {
     },
   });
   const isLoading = form.formState.isSubmitting;
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    try {
-      setImages([]);
-      const response = await axios.post("/api/image", values);
-      const urls = response.data.map((image: { url: string }) => image.url);
-      setImages(urls);
+  // const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  //   try {
+  //     setImages([]);
+  //     const response = await axios.post("/api/image", values);
+  //     const urls = response.data.map((image: { url: string }) => image.url);
+  //     setImages(urls);
 
-      form.reset();
-    } catch (error: any) {
-      if (error?.response?.status === 403) {
-        proModal.onOpen();
-      } else {
-        toast.error("Something went wrong");
-      }
-    } finally {
-      router.refresh();
-    }
-  };
+  //     form.reset();
+  //   } catch (error: any) {
+  //     if (error?.response?.status === 403) {
+  //       proModal.onOpen();
+  //     } else {
+  //       toast.error("Something went wrong");
+  //     }
+  //   } finally {
+  //     router.refresh();
+  //   }
+  // };
   return (
     <div>
       <Heading
@@ -68,10 +68,7 @@ const ConversationPage = () => {
       <div className="px-4 lg:px-8">
         <div>
           <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="rounded-lg border w-full p-4 px-3 md:px-6 focus-within:shadow-sm grid grid-cols-12 gap-2"
-            >
+            <form className="rounded-lg border w-full p-4 px-3 md:px-6 focus-within:shadow-sm grid grid-cols-12 gap-2">
               <FormField
                 name="prompt"
                 render={({ field }) => (
