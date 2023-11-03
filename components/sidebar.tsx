@@ -10,9 +10,10 @@ const montserrat = Montserrat({ weight: "600", subsets: ["latin"] });
 
 interface SidebarProps {
   apiLimitCount: any;
+  isPro: boolean;
 }
 
-const Sidebar = ({ apiLimitCount = 0 }: SidebarProps) => {
+const Sidebar = ({ apiLimitCount = 0, isPro = false }: SidebarProps) => {
   const pathname = usePathname();
   return (
     <div className="spaxce-y-4 py-4 flex flex-col h-full bg-[#111827] text-white">
@@ -45,7 +46,7 @@ const Sidebar = ({ apiLimitCount = 0 }: SidebarProps) => {
           ))}
         </div>
       </div>
-      <FreeCounter apiLimitCount={apiLimitCount} />
+      <FreeCounter apiLimitCount={apiLimitCount} isPro={isPro} />
     </div>
   );
 };
